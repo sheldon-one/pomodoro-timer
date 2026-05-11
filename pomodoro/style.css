@@ -1,0 +1,144 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+.container {
+  text-align: center;
+  -webkit-app-region: no-drag;
+}
+
+.mode-indicator {
+  margin-bottom: 24px;
+}
+
+.mode-indicator span {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 4px;
+  font-weight: 500;
+}
+
+.timer-ring {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 24px;
+}
+
+.timer-ring svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 6;
+}
+
+.ring-progress {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 565.48;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.3s linear;
+}
+
+.timer-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.timer-display span {
+  font-size: 52px;
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn {
+  border: none;
+  border-radius: 24px;
+  padding: 10px 28px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 1px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-start {
+  background: rgba(255, 255, 255, 0.9);
+  color: #c0392b;
+}
+
+.btn-start:hover:not(:disabled) {
+  background: #fff;
+}
+
+.btn-pause {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.btn-pause:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.btn-reset {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-reset:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
