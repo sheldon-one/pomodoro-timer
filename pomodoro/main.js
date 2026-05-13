@@ -21,9 +21,7 @@ function createWindow() {
 }
 
 ipcMain.handle('set-title', (_event, title) => {
-  if (mainWindow) {
-    mainWindow.setTitle(title);
-  }
+  if (mainWindow) mainWindow.setTitle(title);
 });
 
 ipcMain.handle('show-notification', (_event, { title, body }) => {
@@ -34,6 +32,4 @@ ipcMain.handle('show-notification', (_event, { title, body }) => {
 
 app.whenReady().then(createWindow);
 
-app.on('window-all-closed', () => {
-  app.quit();
-});
+app.on('window-all-closed', () => app.quit());

@@ -1,9 +1,9 @@
 const CIRCUMFERENCE = 2 * Math.PI * 90; // ~565.48
 
 const MODES = {
-  WORK: { label: '专注', minutes: 25, next: 'SHORT_BREAK' },
-  SHORT_BREAK: { label: '短休', minutes: 5, next: 'WORK' },
-  LONG_BREAK: { label: '长休', minutes: 15, next: 'WORK' },
+  WORK: { label: '专注', minutes: 25, next: 'SHORT_BREAK', cssClass: 'mode-work' },
+  SHORT_BREAK: { label: '短休', minutes: 5, next: 'WORK', cssClass: 'mode-short_break' },
+  LONG_BREAK: { label: '长休', minutes: 15, next: 'WORK', cssClass: 'mode-long_break' },
 };
 
 let state = 'IDLE'; // IDLE | RUNNING | PAUSED
@@ -15,13 +15,20 @@ let completedSessions = 0;
 let audioCtx = null;
 
 // DOM
+const body = document.body;
 const btnStart = document.getElementById('btnStart');
 const btnPause = document.getElementById('btnPause');
 const btnReset = document.getElementById('btnReset');
 const timeDisplay = document.getElementById('timeDisplay');
 const modeText = document.getElementById('modeText');
 const ringProgress = document.getElementById('ringProgress');
+const sessionLabel = document.getElementById('sessionLabel');
 const sessionDots = document.getElementById('sessionDots').children;
+
+function applyModeClass(mode) {
+  body.classList.remove(...Object.values(MODES).map(m => m.cssClass));
+  body.classList.add(MODES[mode].cssClass);
+}
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
@@ -64,6 +71,7 @@ function setMode(mode) {
   timeLeft = MODES[mode].minutes * 60;
   totalTime = MODES[mode].minutes * 60;
   modeText.textContent = MODES[mode].label;
+  applyModeClass(mode);
   updateDisplay();
 }
 
@@ -84,13 +92,21 @@ function switchMode() {
 }
 
 function updateSessionDots() {
-  const idx = (completedSessions - 1) % 4;
-  for (let i = 0; i < sessionDots.length; i++) {
-    sessionDots[i].classList.toggle('active', i <= idx && completedSessions % 4 !== 0);
-    // for a fresh round after 4+long_break, all dots should be empty
-    if (completedSessions % 4 === 0) {
-      sessionDots[i].classList.remove('active');
+  const round = Math.floor((completedSessions - 1) / 4) * 4;
+  const newLabel = `第 ${round + 1} 轮`;
+
+  if (completedSessions % 4 === 0) {
+    for (let i = 0; i < sessionDots.length; i++) {
+      sessionDots[i].classList.remove('filled');
     }
+  } else {
+    for (let i = 0; i < sessionDots.length; i++) {
+      sessionDots[i].classList.toggle('filled', i < completedSessions - round);
+    }
+  }
+
+  if (sessionLabel.textContent !== newLabel) {
+    sessionLabel.textContent = newLabel;
   }
 }
 
@@ -110,7 +126,6 @@ function startTimer() {
       switchMode();
       updateDisplay();
       updateButtons();
-      // Auto-start next phase
       startTimer();
     }
   }, 1000);
@@ -139,7 +154,6 @@ function playSound() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
-  // Play 3 beeps
   let beepCount = 0;
   function beep() {
     if (beepCount >= 3) return;
@@ -160,15 +174,11 @@ function playSound() {
 }
 
 btnStart.addEventListener('click', () => {
-  if (state === 'IDLE' || state === 'PAUSED') {
-    startTimer();
-  }
+  if (state === 'IDLE' || state === 'PAUSED') startTimer();
 });
 
 btnPause.addEventListener('click', () => {
-  if (state === 'RUNNING') {
-    pauseTimer();
-  }
+  if (state === 'RUNNING') pauseTimer();
 });
 
 btnReset.addEventListener('click', () => {
@@ -176,5 +186,6 @@ btnReset.addEventListener('click', () => {
 });
 
 // Init
+applyModeClass('WORK');
 updateDisplay();
 updateButtons();
